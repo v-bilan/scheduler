@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Witness{% endblock %}
+
+{% block body %}
+    <h1>Edit Witness</h1>
+
+    {{ include('witness/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_witness_index') }}" class="btn btn-primary">back to list</a>
+
+    {{ include('witness/_delete_form.html.twig') }}
+{% endblock %}

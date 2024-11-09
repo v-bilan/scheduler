@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Witness index{% endblock %}
+
+{% block body %}
+    <h1>Witness index</h1>
+    <a href="{{ path('app_witness_new') }}" class="btn btn-primary">Create new</a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>{{ 'FullName' | trans }}</th>
+                <th>{{ 'active' | trans }}</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for witness in witnesses %}
+            <tr>
+                <td>{{ witness.id }}</td>
+                <td>{{ witness.fullName }}</td>
+                <td>{{ witness.active }}</td>
+                <td>
+                    <a href="{{ path('app_witness_show', {'id': witness.id}) }}" class="btn btn-primary">show</a>
+                    <a href="{{ path('app_witness_edit', {'id': witness.id}) }}" class="btn btn-primary">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
