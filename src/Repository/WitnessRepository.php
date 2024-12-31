@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Witness;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\Query\Expr\OrderBy;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,6 +19,16 @@ class WitnessRepository extends ServiceEntityRepository
         parent::__construct($registry, Witness::class);
     }
 
+    public function getFindByQueryBuilder($orderBy= ['fullName' => 'asc']) : QueryBuilder
+    {
+        $result = $this->createQueryBuilder('w');
+        if ($orderBy) {
+            foreach ($orderBy as $field => $order) {
+                $result->addOrderBy("w.$field", $order);
+            }
+        }
+        return $result;
+    }
 //    /**
 //     * @return Witness[] Returns an array of Witness objects
 //     */

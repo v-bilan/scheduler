@@ -6,6 +6,8 @@ use App\Entity\Witness;
 use App\Form\WitnessType;
 use App\Repository\WitnessRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,13 +17,18 @@ use Symfony\Component\Routing\Attribute\Route;
 class WitnessController extends AbstractController
 {
     #[Route('/', name: 'app_witness_index', methods: ['GET'])]
-    public function index(WitnessRepository $witnessRepository): Response
+    public function index(Request $request, WitnessRepository $witnessRepository): Response
     {
+        $adapter = new QueryAdapter($witnessRepository->getFindByQueryBuilder());
+
+        $pagerfanta = Pagerfanta::createForCurrentPageWithMaxPerPage(
+            $adapter,
+            $request->query->get('page', 1),
+            10
+        );
+
         return $this->render('witness/index.html.twig', [
-            'witnesses' => $witnessRepository->findBy(
-                criteria: [],
-                orderBy: ['fullName' => 'asc']
-            ),
+            'witnesses' => $pagerfanta,
         ]);
     }
 
