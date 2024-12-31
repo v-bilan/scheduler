@@ -6,7 +6,7 @@ class DateWithYearAndWeek extends \DateTime
 {
     public function getFullYear(): int
     {
-        return intval($this->format('Y'));
+        return intval($this->format('o'));
     }
     public function getWeek(): int
     {

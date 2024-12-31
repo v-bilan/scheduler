@@ -130,7 +130,7 @@ class TaskController extends AbstractController
     private function getDate($year, $week): DateWithYearAndWeek
     {
         $date = new DateWithYearAndWeek();
-        $year = $year ?: date_format($date, 'Y');
+        $year = $year ?: date_format($date, 'o');
         $week = $week ?: date_format($date, 'W');
         $date->setISODate($year, $week);
         $date->setTime(0, 0, 0);
