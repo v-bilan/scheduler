@@ -4,16 +4,32 @@ namespace App\Repository;
 
 use App\Entity\Role;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Role>
  */
-class RoleRepository extends ServiceEntityRepository
+class RoleRepository extends ServiceEntityRepository implements Pageable
 {
+    private $sortableFields = ['id', 'name','priority'];
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Role::class);
+    }
+    public function isSortableField($field): bool
+    {
+        return in_array($field, $this->sortableFields);
+    }
+    public function getFindByQueryBuilder($orderBy= ['name' => 'ASC']) : QueryBuilder
+    {
+        $result = $this->createQueryBuilder('r');
+        if ($orderBy) {
+            foreach ($orderBy as $field => $order) {
+                $result->addOrderBy("r.$field", $order);
+            }
+        }
+        return $result;
     }
 
     //    /**

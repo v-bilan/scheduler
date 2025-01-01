@@ -2,12 +2,11 @@
 
 namespace App\Controller;
 
+use App\Controller\Traits\PagerFantaTrait;
 use App\Entity\Witness;
 use App\Form\WitnessType;
 use App\Repository\WitnessRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Pagerfanta\Doctrine\ORM\QueryAdapter;
-use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,31 +15,14 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/witness')]
 class WitnessController extends AbstractController
 {
+    use PagerFantaTrait;
     #[Route('/', name: 'app_witness_index', methods: ['GET'])]
     public function index(
         Request $request,
         WitnessRepository $witnessRepository
     ): Response {
-        $orderBy = $request->get('orderBy', null);
-        if ($witnessRepository->isSortableField($orderBy)) {
-            $direction = strtolower($request->get('orderDir')) === 'desc' ? 'DESC' : 'ASC';
-            $queryBuilder =$witnessRepository->getFindByQueryBuilder(
-                orderBy: [$orderBy => $direction]
-            );
-            dump([$orderBy => $direction]);
-        } else {
-            $queryBuilder =$witnessRepository->getFindByQueryBuilder();
-        }
-        $adapter = new QueryAdapter($queryBuilder);
-
-        $pagerfanta = Pagerfanta::createForCurrentPageWithMaxPerPage(
-            $adapter,
-            $request->query->get('page', 1),
-            10
-        );
-
         return $this->render('witness/index.html.twig', [
-            'witnesses' => $pagerfanta,
+            'witnesses' => $this->getPagerFanta($request, $witnessRepository),
         ]);
     }
 

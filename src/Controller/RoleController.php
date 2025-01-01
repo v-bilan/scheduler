@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Controller\Traits\PagerFantaTrait;
 use App\Entity\Role;
 use App\Form\RoleType;
 use App\Repository\RoleRepository;
@@ -14,11 +15,12 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/role')]
 class RoleController extends AbstractController
 {
+    use PagerFantaTrait;
     #[Route('/', name: 'app_role_index', methods: ['GET'])]
-    public function index(RoleRepository $roleRepository): Response
+    public function index(Request $request, RoleRepository $roleRepository): Response
     {
         return $this->render('role/index.html.twig', [
-            'roles' => $roleRepository->findBy([], ['priority' => 'DESC'])
+            'roles' => $this->getPagerFanta($request, $roleRepository),
         ]);
     }
 

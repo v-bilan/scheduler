@@ -5,14 +5,13 @@ namespace App\Repository;
 use App\Entity\Witness;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
-use Doctrine\ORM\Query\Expr\OrderBy;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Witness>
  */
-class WitnessRepository extends ServiceEntityRepository
+class WitnessRepository extends ServiceEntityRepository implements Pageable
 {
     private $sortableFields = ['id', 'fullName','active'];
     public function __construct(ManagerRegistry $registry)
@@ -20,7 +19,7 @@ class WitnessRepository extends ServiceEntityRepository
         parent::__construct($registry, Witness::class);
     }
 
-    public function isSortableField($field)
+    public function isSortableField($field): bool
     {
         return in_array($field, $this->sortableFields);
     }
