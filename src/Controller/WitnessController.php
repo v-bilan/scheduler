@@ -17,9 +17,21 @@ use Symfony\Component\Routing\Attribute\Route;
 class WitnessController extends AbstractController
 {
     #[Route('/', name: 'app_witness_index', methods: ['GET'])]
-    public function index(Request $request, WitnessRepository $witnessRepository): Response
-    {
-        $adapter = new QueryAdapter($witnessRepository->getFindByQueryBuilder());
+    public function index(
+        Request $request,
+        WitnessRepository $witnessRepository
+    ): Response {
+        $orderBy = $request->get('orderBy', null);
+        if ($witnessRepository->isSortableField($orderBy)) {
+            $direction = strtolower($request->get('orderDir')) === 'desc' ? 'DESC' : 'ASC';
+            $queryBuilder =$witnessRepository->getFindByQueryBuilder(
+                orderBy: [$orderBy => $direction]
+            );
+            dump([$orderBy => $direction]);
+        } else {
+            $queryBuilder =$witnessRepository->getFindByQueryBuilder();
+        }
+        $adapter = new QueryAdapter($queryBuilder);
 
         $pagerfanta = Pagerfanta::createForCurrentPageWithMaxPerPage(
             $adapter,

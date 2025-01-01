@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import 'macros.html.twig' as macros %}
 
 {% block title %}Witness index{% endblock %}
 
@@ -11,9 +12,9 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>{{ 'FullName' | trans }}</th>
-                <th>{{ 'active' | trans }}</th>
+                <th>{{ macros.toggleOrderParams('id', 'ID') }}</th>
+                <th>{{ macros.toggleOrderParams('fullName', 'FullName') }}</a></th>
+                <th>{{ macros.toggleOrderParams('active', 'active') }}</th>
                 <th>actions</th>
             </tr>
         </thead>

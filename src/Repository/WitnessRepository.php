@@ -14,12 +14,17 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class WitnessRepository extends ServiceEntityRepository
 {
+    private $sortableFields = ['id', 'fullName','active'];
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Witness::class);
     }
 
-    public function getFindByQueryBuilder($orderBy= ['fullName' => 'asc']) : QueryBuilder
+    public function isSortableField($field)
+    {
+        return in_array($field, $this->sortableFields);
+    }
+    public function getFindByQueryBuilder($orderBy= ['fullName' => 'ASC']) : QueryBuilder
     {
         $result = $this->createQueryBuilder('w');
         if ($orderBy) {

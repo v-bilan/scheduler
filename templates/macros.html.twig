@@ -1,0 +1,9 @@
+{% macro toggleOrderParams(orderByField, label) %}
+    {% if app.request.query.get('orderBy', null) == orderByField
+        and  app.request.query.get('orderDir', 'asc') == 'asc' %}
+        {% set queryParams = app.request.query.all | merge({'orderBy': orderByField, 'orderDir': 'desc'}) %}
+    {% else %}
+        {% set queryParams = app.request.query.all | merge({'orderBy': orderByField, 'orderDir': 'asc'}) %}
+    {% endif %}
+    <a href="{{ path('app_witness_index', queryParams) }}">{{ label }}</a>
+{% endmacro %}
