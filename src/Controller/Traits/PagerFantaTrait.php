@@ -9,9 +9,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 trait PagerFantaTrait
 {
-    function getPagerFanta(Request $request, Pageable $pageableRepository): Pagerfanta
+    function getPagerFanta(Request $request, Pageable $pageableRepository, $defaultOrderBy = null): Pagerfanta
     {
-        $orderBy = $request->get('orderBy', null);
+        $orderBy = $request->get('orderBy', $defaultOrderBy);
         if ($pageableRepository->isSortableField($orderBy)) {
             $direction = strtolower($request->get('orderDir')) === 'desc' ? 'DESC' : 'ASC';
             $queryBuilder =$pageableRepository->getFindByQueryBuilder(

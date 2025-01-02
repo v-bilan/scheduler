@@ -22,7 +22,7 @@ class WitnessController extends AbstractController
         WitnessRepository $witnessRepository
     ): Response {
         return $this->render('witness/index.html.twig', [
-            'witnesses' => $this->getPagerFanta($request, $witnessRepository),
+            'witnesses' => $this->getPagerFanta($request, $witnessRepository, 'fullName'),
         ]);
     }
 

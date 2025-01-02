@@ -13,26 +13,13 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class WitnessRepository extends ServiceEntityRepository implements Pageable
 {
+    use \App\Repository\Traits\Pageable;
     private $sortableFields = ['id', 'fullName','active'];
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Witness::class);
     }
 
-    public function isSortableField($field): bool
-    {
-        return in_array($field, $this->sortableFields);
-    }
-    public function getFindByQueryBuilder($orderBy= ['fullName' => 'ASC']) : QueryBuilder
-    {
-        $result = $this->createQueryBuilder('w');
-        if ($orderBy) {
-            foreach ($orderBy as $field => $order) {
-                $result->addOrderBy("w.$field", $order);
-            }
-        }
-        return $result;
-    }
 //    /**
 //     * @return Witness[] Returns an array of Witness objects
 //     */

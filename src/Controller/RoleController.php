@@ -20,7 +20,7 @@ class RoleController extends AbstractController
     public function index(Request $request, RoleRepository $roleRepository): Response
     {
         return $this->render('role/index.html.twig', [
-            'roles' => $this->getPagerFanta($request, $roleRepository),
+            'roles' => $this->getPagerFanta($request, $roleRepository, 'name'),
         ]);
     }
 
