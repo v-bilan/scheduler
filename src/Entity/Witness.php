@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ApiResource(
     operations: [
@@ -28,6 +29,7 @@ class Witness
 
     #[Groups(['user:list'])]
     #[ORM\Column(length: 64, unique: true)]
+    #[SerializedName('full_name')]
     private ?string $fullName = null;
 
     /**
