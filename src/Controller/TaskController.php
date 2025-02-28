@@ -32,9 +32,7 @@ class TaskController extends AbstractController
         private TaskGroupRepository $taskGroupRepository,
         private WitnessRepository $witnessRepository,
         private TaskWitnessDateRepository $taskWitnessDateRepository,
-    ) {
-
-    }
+    ) {}
 
     #[Route('/createScedule/{year}/{week}', name: 'app_create_scedule')]
     public function createScedule(
@@ -77,14 +75,14 @@ class TaskController extends AbstractController
             $formBuilder
                 ->add($key, EntityType::class, [
                     'label' => $task['label'] .
-                        (isset($preparedScheduler[$key]['witness']) ? ' (' . $preparedScheduler[$key]['witness'] .')':''),
+                        (isset($preparedScheduler[$key]['witness']) ? ' (' . $preparedScheduler[$key]['witness'] . ')' : ''),
                     'class' => Witness::class,
                     'choice_label' => 'full_name',
                     'data' => $suggestedWitness[$key] ?? null,
                     'choices' => $this->witnessRepository->findByRoleName($tasks[$key]->getName()),
                     'attr' => [
                         'data-validation-of-duplication-target' => 'witness'
-                     ],
+                    ],
                 ]);
         }
 
@@ -137,10 +135,10 @@ class TaskController extends AbstractController
         return $date;
     }
 
-    private function getPreparedScheduler(\DateTime $date, array $tasksData) :array
+    private function getPreparedScheduler(\DateTime $date, array $tasksData): array
     {
         $preparedScheduler = [];
-        $scheduler = $this->taskWitnessDateRepository->findBy(['Date'=>$date]);
+        $scheduler = $this->taskWitnessDateRepository->findBy(['Date' => $date]);
         if ($scheduler && count($scheduler) == count($tasksData)) {
             $schedulerWithKey = [];
             foreach ($scheduler as $task) {
@@ -160,8 +158,7 @@ class TaskController extends AbstractController
         TasksParser $tasksParser,
         int $year = 0,
         int $week = 0
-    ): Response
-    {
+    ): Response {
         $date = $this->getDate($year, $week);
 
         $parsedTasks = $tasksParser->getTasks($date->getFullYear(), $date->getWeek());
@@ -205,7 +202,7 @@ class TaskController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $stringTasks = $this->serializer->serialize($data, 'json');
-            if ( !($taskGroup = $this->taskGroupRepository->findOneBy(['date' => $date] )) ) {
+            if (!($taskGroup = $this->taskGroupRepository->findOneBy(['date' => $date]))) {
                 $taskGroup = new TaskGroup();
                 $taskGroup->setDate($date);
             }
@@ -233,7 +230,7 @@ class TaskController extends AbstractController
     private function findRoleByName($name = 'Призначений брат'): Role | null
     {
         if (!isset($this->cachedRoles[$name])) {
-            $this->cachedRoles[$name] = $this->roleRepository->findOneBy(['name'=>$name]);
+            $this->cachedRoles[$name] = $this->roleRepository->findOneBy(['name' => $name]);
         }
         return $this->cachedRoles[$name];
     }
@@ -256,7 +253,7 @@ class TaskController extends AbstractController
             default => 'Призначений брат'
         };
     }
-    private function getTasksDataFromTasks(array $tasks) : array
+    private function getTasksDataFromTasks(array $tasks): array
     {
         $result = [
             'leader' => [
@@ -288,9 +285,9 @@ class TaskController extends AbstractController
     private function getTaskByPriority(array $tasks)
     {
         uasort($tasks, function (Role $x, Role $y) {
-            if ( $x->getPriority() == $y->getPriority() )
+            if ($x->getPriority() == $y->getPriority())
                 return 0;
-            else if ( $x->getPriority() > $y->getPriority() )
+            else if ($x->getPriority() > $y->getPriority())
                 return -1;
             else
                 return 1;

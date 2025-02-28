@@ -2,32 +2,48 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\TaskWitnessDateRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\UniqueConstraint('task_date', ['Date', 'task'])]
 #[ORM\Entity(repositoryClass: TaskWitnessDateRepository::class)]
+
+#[ApiResource(
+    operations: [
+        new GetCollection(normalizationContext: ['groups' => 'task:list'])
+    ],
+    order: ['id' => 'ASC'],
+    paginationEnabled: true,
+)]
 class TaskWitnessDate
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['task:list'])]
     private ?int $id = null;
 
+    #[Groups(['task:list'])]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $Date = null;
+    private ?\DateTimeInterface $date = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['task:list'])]
     private ?Role $Role = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['task:list'])]
     private ?Witness $Witness = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['task:list'])]
     private ?string $task = null;
 
     public function getId(): ?int
@@ -37,12 +53,12 @@ class TaskWitnessDate
 
     public function getDate(): ?\DateTimeInterface
     {
-        return $this->Date;
+        return $this->date;
     }
 
     public function setDate(\DateTimeInterface $Date): static
     {
-        $this->Date = $Date;
+        $this->date = $Date;
 
         return $this;
     }

@@ -26,7 +26,7 @@ class Role
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-
+    #[Groups(['role:list'])]
     private ?int $id = null;
 
     public function setId(?int $id): void
@@ -34,6 +34,7 @@ class Role
         $this->id = $id;
     }
 
+    #[Groups(['role:list'])]
     #[ORM\Column(length: 32, unique: true)]
     private ?string $name = null;
 
@@ -43,7 +44,7 @@ class Role
     #[ORM\ManyToMany(targetEntity: Witness::class, mappedBy: 'Roles')]
     private Collection $witnesses;
 
-
+    #[Groups(['role:list'])]
     #[ORM\Column(nullable: true)]
     private ?int $priority = null;
 
@@ -52,13 +53,12 @@ class Role
         $this->witnesses = new ArrayCollection();
     }
 
-    #[Groups(['role:list', 'user:list'])]
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    #[Groups(['role:list'])]
     public function getName(): ?string
     {
         return $this->name;
@@ -99,7 +99,7 @@ class Role
         return $this;
     }
 
-    #[Groups(['role:list'])]
+
     public function getPriority(): ?int
     {
         return $this->priority;
