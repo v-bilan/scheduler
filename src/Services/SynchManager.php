@@ -125,7 +125,7 @@ class SynchManager
             }
 
             $taskWitnessDate->setTask($item['attributes']['task']);
-            $taskWitnessDate->setDate(\DateTime::createFromFormat('Y-m-d', $item['attributes']['date']));
+            $taskWitnessDate->setStingDate($item['attributes']['date']);
             if (!isset($this->taskWitnessDates[$item['attributes']['id']])) {
                 $this->entityManager->persist($taskWitnessDate);
             }

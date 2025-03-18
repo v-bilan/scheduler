@@ -56,6 +56,11 @@ class TaskWitnessDate
         return $this->date;
     }
 
+    public function setStringDate($date): static
+    {
+        return $this->setDate(\DateTime::createFromFormat('Y-m-d', $date));
+    }
+
     public function setDate(\DateTimeInterface $Date): static
     {
         $this->date = $Date;
