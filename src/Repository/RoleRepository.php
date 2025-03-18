@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Role;
+use App\Repository\Traits\ItemsById;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -13,7 +14,8 @@ use Doctrine\Persistence\ManagerRegistry;
 class RoleRepository extends ServiceEntityRepository implements Pageable
 {
     use \App\Repository\Traits\Pageable;
-    private $sortableFields = ['id', 'name','priority'];
+    use ItemsById;
+    private $sortableFields = ['id', 'name', 'priority'];
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Role::class);

@@ -138,7 +138,7 @@ class TaskController extends AbstractController
     private function getPreparedScheduler(\DateTime $date, array $tasksData): array
     {
         $preparedScheduler = [];
-        $scheduler = $this->taskWitnessDateRepository->findBy(['Date' => $date]);
+        $scheduler = $this->taskWitnessDateRepository->findBy(['date' => $date]);
         if ($scheduler && count($scheduler) == count($tasksData)) {
             $schedulerWithKey = [];
             foreach ($scheduler as $task) {

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\TaskWitnessDate;
+use App\Repository\Traits\ItemsById;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -11,6 +12,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TaskWitnessDateRepository extends ServiceEntityRepository
 {
+    use ItemsById;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, TaskWitnessDate::class);

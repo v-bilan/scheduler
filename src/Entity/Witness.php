@@ -100,4 +100,11 @@ class Witness
 
         return $this;
     }
+
+    public function setId(bool $id): static
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }

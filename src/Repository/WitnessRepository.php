@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Witness;
+use App\Repository\Traits\ItemsById;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -14,36 +15,39 @@ use Doctrine\Persistence\ManagerRegistry;
 class WitnessRepository extends ServiceEntityRepository implements Pageable
 {
     use \App\Repository\Traits\Pageable;
-    private $sortableFields = ['id', 'fullName','active'];
+    use ItemsById;
+
+    private $sortableFields = ['id', 'fullName', 'active'];
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Witness::class);
     }
 
-//    /**
-//     * @return Witness[] Returns an array of Witness objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('w')
-//            ->andWhere('w.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('w.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    //    /**
+    //     * @return Witness[] Returns an array of Witness objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('w')
+    //            ->andWhere('w.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('w.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
 
     public function findByRoleId(int $roleId, \DateTime $date): array
     {
-        $result = $this->createQueryBuilder('w')//->addSelect('max(twd.Date) as lastDate')
+        $result = $this->createQueryBuilder('w') //->addSelect('max(twd.Date) as lastDate')
             ->innerJoin('w.Roles', 'role')
             ->leftJoin(
                 'App\Entity\TaskWitnessDate',
-                'twd' ,
+                'twd',
                 Join::WITH,
-                'twd.Witness = w AND twd.Role = role AND twd.Date < :date ')
+                'twd.Witness = w AND twd.Role = role AND twd.Date < :date '
+            )
             ->setParameter('date', $date)
             ->andWhere('role.id = :roleId')
             ->andWhere('w.active = 1')
@@ -66,6 +70,6 @@ class WitnessRepository extends ServiceEntityRepository implements Pageable
             ->getQuery()
 
             ->getResult()
-            ;
+        ;
     }
 }

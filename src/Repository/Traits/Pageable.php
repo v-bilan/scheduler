@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Repository\Traits;
+
 use Doctrine\ORM\QueryBuilder;
 
 trait Pageable
@@ -8,7 +10,7 @@ trait Pageable
     {
         return in_array($field, $this->sortableFields);
     }
-    public function getFindByQueryBuilder($orderBy = []) : QueryBuilder
+    public function getFindByQueryBuilder($orderBy = []): QueryBuilder
     {
         $result = $this->createQueryBuilder('e');
 
