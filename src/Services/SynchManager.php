@@ -125,7 +125,7 @@ class SynchManager
             }
 
             $taskWitnessDate->setTask($item['attributes']['task']);
-            $taskWitnessDate->setStingDate($item['attributes']['date']);
+            $taskWitnessDate->setStringDate($item['attributes']['date']);
             if (!isset($this->taskWitnessDates[$item['attributes']['id']])) {
                 $this->entityManager->persist($taskWitnessDate);
             }
