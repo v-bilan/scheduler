@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vacation index{% endblock %}
+
+{% block body %}
+    <h1>Vacation index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>{{ 'Id' | trans}}</th>
+                <th>{{ 'StartDate' | trans}}</th>
+                <th>{{ 'EndDate' | trans}}</th>
+                <th>{{ 'Witness' | trans}}</th>
+                <th>{{ 'actions' | trans}}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for vacation in vacations %}
+            <tr>
+                <td>{{ vacation.id }}</td>
+                <td>{{ vacation.startDate ? vacation.startDate|date('Y-m-d') : '' }}</td>
+                <td>{{ vacation.endDate ? vacation.endDate|date('Y-m-d') : '' }}</td>
+                <td>{{ vacation.witness ? vacation.witness.fullName : '' }}</td>
+                <td>
+                    <a href="{{ path('app_vacation_show', {'id': vacation.id}) }}">show</a>
+                    <a href="{{ path('app_vacation_edit', {'id': vacation.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+   {% if witness %}
+        <a href="{{ path('app_vacation_new', {'id': witness.id}) }}">Create new</a>
+   {% else %} 
+         <a href="{{ path('app_vacation_new') }}">Create new</a>
+   {% endif %}
+   
+{% endblock %}

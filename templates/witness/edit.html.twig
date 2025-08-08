@@ -10,4 +10,6 @@
     <a href="{{ path('app_witness_index') }}" class="btn btn-primary">back to list</a>
 
     {{ include('witness/_delete_form.html.twig') }}
+
+    <a href="{{ path('app_vacation_index', {'id': witness.id} )}}"> {{ 'Vacations' | trans}}</a>
 {% endblock %}

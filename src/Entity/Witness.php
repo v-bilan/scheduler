@@ -43,9 +43,16 @@ class Witness
     #[ORM\Column(options: ["default" => 1])]
     private ?bool $active = true;
 
+    /**
+     * @var Collection<int, Vacation>
+     */
+    #[ORM\OneToMany(targetEntity: Vacation::class, mappedBy: 'witness', orphanRemoval: true)]
+    private Collection $vacations;
+
     public function __construct()
     {
         $this->Roles = new ArrayCollection();
+        $this->vacations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -111,27 +118,27 @@ class Witness
     /**
      * @return Collection<int, Vacation>
      */
-    public function getStartAt(): Collection
+    public function getVacations(): Collection
     {
-        return $this->startAt;
+        return $this->vacations;
     }
 
-    public function addStartAt(Vacation $startAt): static
+    public function addVacation(Vacation $vacation): static
     {
-        if (!$this->startAt->contains($startAt)) {
-            $this->startAt->add($startAt);
-            $startAt->setWitness($this);
+        if (!$this->vacations->contains($vacation)) {
+            $this->vacations->add($vacation);
+            $vacation->setWitness($this);
         }
 
         return $this;
     }
 
-    public function removeStartAt(Vacation $startAt): static
+    public function removeVacation(Vacation $vacation): static
     {
-        if ($this->startAt->removeElement($startAt)) {
+        if ($this->vacations->removeElement($vacation)) {
             // set the owning side to null (unless already changed)
-            if ($startAt->getWitness() === $this) {
-                $startAt->setWitness(null);
+            if ($vacation->getWitness() === $this) {
+                $vacation->setWitness(null);
             }
         }
 

@@ -75,7 +75,7 @@ class WitnessController extends AbstractController
     #[Route('/{id}', name: 'app_witness_delete', methods: ['POST'])]
     public function delete(Request $request, Witness $witness, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$witness->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $witness->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($witness);
             $entityManager->flush();
         }

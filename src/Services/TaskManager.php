@@ -32,6 +32,7 @@ class TaskManager
     }
     private function getWitnessesByRole(string $role, Date $date)
     {
+
         if (!isset($this->witnessesByRole[$date->__toString()][$role])) {
             $this->witnessesByRole[$date->__toString()][$role] = DB::table('witnesses')->select([
                 'witnesses.id as witness_id',
