@@ -10,3 +10,9 @@ import './bootstrap.js';
 import './styles/app.css';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Якщо використовуєте CSS версію Bootstrap
 import 'bootstrap';
+import flatpickr from "flatpickr";
+
+flatpickr('.datepicker', {
+    dateFormat: "Y-m-d",
+});
+import "flatpickr/dist/flatpickr.min.css";

@@ -101,9 +101,39 @@ class Witness
         return $this;
     }
 
-    public function setId(bool $id): static
+    public function setId(int $id): static
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Vacation>
+     */
+    public function getStartAt(): Collection
+    {
+        return $this->startAt;
+    }
+
+    public function addStartAt(Vacation $startAt): static
+    {
+        if (!$this->startAt->contains($startAt)) {
+            $this->startAt->add($startAt);
+            $startAt->setWitness($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStartAt(Vacation $startAt): static
+    {
+        if ($this->startAt->removeElement($startAt)) {
+            // set the owning side to null (unless already changed)
+            if ($startAt->getWitness() === $this) {
+                $startAt->setWitness(null);
+            }
+        }
 
         return $this;
     }

@@ -70,7 +70,9 @@ class SynchManager
         $this->witnesses = $this->witnessRepository->getAllWithIdKey();
 
         $items = $this->syncApiClient->getItems('witness');
+
         foreach ($items as $item) {
+
             $witness = $this->witnesses[$item['attributes']['id']] ?? new Witness();
             if (!$witness->getId()) {
                 $witness->setId($item['attributes']['id']);

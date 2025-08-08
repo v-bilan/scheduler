@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\TaskWitnessDate;
+use App\Entity\Witness;
 use App\Repository\Traits\ItemsById;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -18,7 +20,19 @@ class TaskWitnessDateRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, TaskWitnessDate::class);
     }
-
+    public function findByRange($dateFrom, $dateTo): array
+    {
+        return $this->createQueryBuilder('t')
+            ->leftJoin('t.Witness', 'Witness')
+            ->addSelect('Witness')
+            ->andWhere('t.date >= :dateFrom')
+            ->andWhere('t.date <= :dateTo')
+            ->setParameter('dateFrom', $dateFrom)
+            ->setParameter('dateTo', $dateTo)
+            ->orderBy('t.date', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
     //    /**
     //     * @return TaskWitnessDate[] Returns an array of TaskWitnessDate objects
     //     */

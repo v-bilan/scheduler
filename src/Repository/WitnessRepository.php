@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Witness;
 use App\Repository\Traits\ItemsById;
+use App\Util\Date;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -71,5 +72,33 @@ class WitnessRepository extends ServiceEntityRepository implements Pageable
 
             ->getResult()
         ;
+    }
+
+    public function getWitnessesByRole(string $role, Date $date)
+    {
+        '
+select
+    `witnesses`.`id` as `witness_id`,
+    `witnesses`.`full_name`,
+    `roles`.`name` as `role_name`,
+    `roles`.`id` as `role_id`,
+    max(task_witness_date.date) as last_date
+from
+    `witnesses`
+    inner join `role_witness` on `witnesses`.`id` = `role_witness`.`witness_id`
+    inner join `roles` on `role_witness`.`role_id` = `roles`.`id`
+    left join `task_witness_date` on `witnesses`.`id` = `task_witness_date`.`witness_id`
+    and `roles`.`id` = `task_witness_date`.`role_id`
+    and `task_witness_date`.`date` < :date
+where
+    `roles`.`name` = :role
+    and `witnesses`.`active` = 1
+group by
+    `witnesses`.`full_name`,
+    `roles`.`id`,
+    `roles`.`name`,
+    `witnesses`.`id`
+order by `last_date` asc
+        ';
     }
 }
