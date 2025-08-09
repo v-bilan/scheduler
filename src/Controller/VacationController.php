@@ -6,6 +6,7 @@ use App\Entity\Vacation;
 use App\Entity\Witness;
 use App\Form\VacationType;
 use App\Repository\VacationRepository;
+use App\Services\PagerFantaManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,11 +17,19 @@ use Symfony\Component\Routing\Attribute\Route;
 class VacationController extends AbstractController
 {
     #[Route('/list/{id}', requirements: ['id' => '\d+'], defaults: ['id' => null], name: 'app_vacation_index', methods: ['GET'])]
-    public function index(VacationRepository $vacationRepository, ?Witness $witness = null): Response
-    {
+    public function index(
+        Request $request,
+        VacationRepository $vacationRepository,
+        PagerFantaManager $pagerFantaManager,
+        ?Witness $witness = null
+    ): Response {
+        $queryBuilder = $pagerFantaManager->getQueryBuilder($request, $vacationRepository);
+
+        $vacationRepository->attachWitnessesToBuilder($queryBuilder, $witness);
+
         return $this->render('vacation/index.html.twig', [
             'witness' => $witness,
-            'vacations' => $witness ? $witness->getVacations() : $vacationRepository->findAllWithWitnesses(),
+            'vacations' => $pagerFantaManager->createPagerFanta($queryBuilder, $request->query->get('page', 1))
         ]);
     }
 

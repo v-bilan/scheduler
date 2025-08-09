@@ -18,7 +18,7 @@ class WitnessRepository extends ServiceEntityRepository implements Pageable
     use \App\Repository\Traits\Pageable;
     use ItemsById;
 
-    private $sortableFields = ['id', 'fullName', 'active'];
+    private $sortableFields = ['id' => 'e.id', 'fullName' => 'e.fullName', 'active' => 'e.active'];
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Witness::class);

@@ -6,17 +6,18 @@ use Doctrine\ORM\QueryBuilder;
 
 trait Pageable
 {
-    public function isSortableField($field): bool
+    public function getFieldForSorting($field): ?string
     {
-        return in_array($field, $this->sortableFields);
+        return $this->sortableFields[$field] ?? null;
     }
+
     public function getFindByQueryBuilder($orderBy = []): QueryBuilder
     {
         $result = $this->createQueryBuilder('e');
 
         if ($orderBy) {
             foreach ($orderBy as $field => $order) {
-                $result->addOrderBy('e.' . $field, $order);
+                $result->addOrderBy($field, $order);
             }
         }
         return $result;

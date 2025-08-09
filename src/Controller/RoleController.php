@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-use App\Controller\Traits\PagerFantaTrait;
 use App\Entity\Role;
 use App\Form\RoleType;
 use App\Repository\RoleRepository;
+use App\Services\PagerFantaManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,12 +15,12 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/role')]
 class RoleController extends AbstractController
 {
-    use PagerFantaTrait;
+
     #[Route('/', name: 'app_role_index', methods: ['GET'])]
-    public function index(Request $request, RoleRepository $roleRepository): Response
+    public function index(Request $request, RoleRepository $roleRepository, PagerFantaManager $pagerFantaManager): Response
     {
         return $this->render('role/index.html.twig', [
-            'roles' => $this->getPagerFanta($request, $roleRepository, 'name'),
+            'roles' => $pagerFantaManager->getPagerFanta($request, $roleRepository, 'name'),
         ]);
     }
 
@@ -73,7 +73,7 @@ class RoleController extends AbstractController
     #[Route('/{id}', name: 'app_role_delete', methods: ['POST'])]
     public function delete(Request $request, Role $role, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$role->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $role->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($role);
             $entityManager->flush();
         }

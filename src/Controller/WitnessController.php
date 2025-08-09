@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-use App\Controller\Traits\PagerFantaTrait;
 use App\Entity\Witness;
 use App\Form\WitnessType;
 use App\Repository\WitnessRepository;
+use App\Services\PagerFantaManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,14 +15,14 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/witness')]
 class WitnessController extends AbstractController
 {
-    use PagerFantaTrait;
     #[Route('/', name: 'app_witness_index', methods: ['GET'])]
     public function index(
         Request $request,
-        WitnessRepository $witnessRepository
+        WitnessRepository $witnessRepository,
+        PagerFantaManager $pagerFantaManager
     ): Response {
         return $this->render('witness/index.html.twig', [
-            'witnesses' => $this->getPagerFanta($request, $witnessRepository, 'fullName'),
+            'witnesses' => $pagerFantaManager->getPagerFanta($request, $witnessRepository, 'fullName'),
         ]);
     }
 

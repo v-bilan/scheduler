@@ -15,7 +15,7 @@ class RoleRepository extends ServiceEntityRepository implements Pageable
 {
     use \App\Repository\Traits\Pageable;
     use ItemsById;
-    private $sortableFields = ['id', 'name', 'priority'];
+    private $sortableFields = ['id' => 'e.id', 'name' => 'e.name', 'priority' => 'e.priority'];
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Role::class);

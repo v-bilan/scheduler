@@ -1,17 +1,26 @@
 {% extends 'base.html.twig' %}
 
+{% import 'macros.html.twig' as macros %}
+
 {% block title %}Vacation index{% endblock %}
 
 {% block body %}
+
+   {% if witness %}
+         {% set params = {'id': witness.id} %}
+   {% else %} 
+         {% set params = {} %}
+   {% endif %}
     <h1>Vacation index</h1>
 
     <table class="table">
         <thead>
             <tr>
-                <th>{{ 'Id' | trans}}</th>
-                <th>{{ 'StartDate' | trans}}</th>
-                <th>{{ 'EndDate' | trans}}</th>
-                <th>{{ 'Witness' | trans}}</th>
+                <th>{{ macros.toggleOrderParams('app_vacation_index', 'id', 'ID', params)}} </th>
+                <th>{{ macros.toggleOrderParams('app_vacation_index', 'startDate', 'Start Date', params) }}</th>
+                <th>{{ macros.toggleOrderParams('app_vacation_index', 'endDate', 'End Date', params) }}</th>                
+                <th>{{ macros.toggleOrderParams('app_vacation_index', 'fullName', 'Full Name', params) }}</th>  
+                
                 <th>{{ 'actions' | trans}}</th>
             </tr>
         </thead>

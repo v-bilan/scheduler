@@ -2,20 +2,36 @@
 
 namespace App\Repository;
 
+use ApiPlatform\Metadata\GraphQl\Query;
 use App\Entity\Vacation;
+use App\Repository\Traits\ItemsById;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Vacation>
  */
-class VacationRepository extends ServiceEntityRepository
+class VacationRepository extends ServiceEntityRepository implements Pageable
 {
+    use \App\Repository\Traits\Pageable;
+    use ItemsById;
+
+    private $sortableFields = ['id' => 'e.id', 'startDate' => 'e.startDate', 'endDate' => 'e.endDate', 'fullName' => 'Witness.fullName'];
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Vacation::class);
     }
 
+    public function attachWitnessesToBuilder(QueryBuilder $queryBuilder, $witness  = null)
+    {
+        $queryBuilder->innerJoin('e.witness', 'Witness')
+            ->addSelect('Witness as w');
+        if ($witness) {
+            $queryBuilder->where('e.witness = :witness')
+                ->setParameter('witness', $witness);
+        }
+    }
     public function findAllWithWitnesses()
     {
         return $this->createQueryBuilder('v')
