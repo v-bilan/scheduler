@@ -20,6 +20,17 @@ class TaskWitnessDateRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, TaskWitnessDate::class);
     }
+    public function getWithWitness($date)
+    {
+        return $this->createQueryBuilder('t')
+            ->leftJoin('t.Witness', 'Witness')
+            ->addSelect('Witness')
+            ->andWhere('t.date = :date')
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findByRange($dateFrom, $dateTo): array
     {
         return $this->createQueryBuilder('t')

@@ -21,7 +21,7 @@
                     <a class="nav-link" href="{{path('app_home')}}"><span class="sr-only">Home</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if app.request.attributes.get('_route') == 'app_show_task'%} disabled {% endif %}" href="{{ path('app_show_task') }}">{{ 'Scheduler' | trans }}</a>
+                    <a class="nav-link {% if app.request.attributes.get('_route') == 'app_task'%} disabled {% endif %}" href="{{ path('app_task') }}">{{ 'Scheduler' | trans }}</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if app.request.attributes.get('_route') == 'app_role_index'%} disabled {% endif %}" href="{{ path('app_role_index') }}">{{ 'Roles' | trans }}</a>
@@ -33,6 +33,9 @@
                 #}
                 <li class="nav-item">
                     <a class="nav-link {% if app.request.attributes.get('_route') == 'app_witness_index'%} disabled {% endif %}" href="{{ path('app_witness_index')}}">{{ 'Witnesses' | trans }}</a>
+                </li>
+                 <li class="nav-item">
+                    <a class="nav-link {% if app.request.attributes.get('_route') == 'app_vacation_index'%} disabled {% endif %}" href="{{ path('app_vacation_index')}}">{{ 'Vacations' | trans }}</a>
                 </li>
 
             </ul>

@@ -4,8 +4,12 @@ namespace App\Services;
 
 use App\Util\Date;
 use App\Entity\Role;
-use App\Models\TaskWitnessDate;
-use App\Models\Witness;
+use App\Entity\TaskWitnessDate;
+use App\Entity\Witness;
+use App\Repository\RoleRepository;
+use App\Repository\TaskWitnessDateRepository;
+use App\Repository\WitnessRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
 
@@ -20,76 +24,72 @@ class TaskManager
 
     private $usedWitnesses = [];
 
-    public function __construct(private TasksParser $tasksParser) {}
+    public function __construct(
+        private EntityManagerInterface $em,
+        private TasksParser $tasksParser,
+        private WitnessRepository $witnessRepository,
+        private RoleRepository $roleRepository,
+        private TaskWitnessDateRepository $taskWitnessDateRepository
+    ) {}
 
     private function getWitnessesByRoleSorted(string $role, Date $date)
     {
-        if (!isset($this->witnessesByRoleSorted[$date->__toString()][$role])) {
-            $this->witnessesByRoleSorted[$date->__toString()][$role] = $this->getWitnessesByRole($role, $date)->toArray();
-            uasort($this->witnessesByRoleSorted[$date->__toString()][$role], fn($a, $b) => $a->full_name > $b->full_name);
+        $key = (string)$date;
+        if (!isset($this->witnessesByRoleSorted[$key][$role])) {
+            $this->witnessesByRoleSorted[$key][$role] = $this->getWitnessesByRole($role, $date);
+            uasort($this->witnessesByRoleSorted[$key][$role], fn($a, $b) => $a['fullName'] > $b['fullName']);
         }
-        return $this->witnessesByRoleSorted[$date->__toString()][$role];
+        return $this->witnessesByRoleSorted[$key][$role];
     }
     private function getWitnessesByRole(string $role, Date $date)
     {
-
-        if (!isset($this->witnessesByRole[$date->__toString()][$role])) {
-            $this->witnessesByRole[$date->__toString()][$role] = DB::table('witnesses')->select([
-                'witnesses.id as witness_id',
-                'witnesses.full_name',
-                'roles.name as role_name',
-                'roles.id as role_id',
-                DB::raw('max(task_witness_date.date) as last_date')
-            ])
-                ->join('role_witness', 'witnesses.id', '=', 'role_witness.witness_id')
-                ->join('roles', 'role_witness.role_id', '=', 'roles.id')
-                ->leftJoin('task_witness_date', function (JoinClause $join) use ($date) {
-                    $join->on('witnesses.id', '=', 'task_witness_date.witness_id')
-                        ->on('roles.id', '=', 'task_witness_date.role_id')
-                        ->where('task_witness_date.date', '<', $date);
-                })
-                ->where('roles.name', '=', $role)
-                ->where('witnesses.active', '=', 1)
-                ->groupBy(['witnesses.full_name', 'roles.id', 'roles.name', 'witnesses.id'])
-                ->orderBy('last_date')
-                ->get();
+        $key = (string)$date;
+        if (!isset($this->witnessesByRole[$key][$role])) {
+            $this->witnessesByRole[$key][$role] = $this->witnessRepository->getWitnessesByRole($role, $date);
         }
-
-
-        return $this->witnessesByRole[$date->__toString()][$role];
+        return $this->witnessesByRole[$key][$role];
     }
 
     public function createSchedule(array $witnesses, Date $date)
     {
-        $tasks = $this->getTasksData($date, false);
-        try {
-            DB::beginTransaction();
-            TaskWitnessDate::where('date', '=', $date)->delete();
-            foreach ($tasks as $taskName => $taskData) {
-                TaskWitnessDate::create([
-                    'role_id' => $taskData['role_id'],
-                    'task' => $taskName,
-                    'witness_id' => $witnesses[$taskName],
-                    'date' => $date
-                ]);
+        $this->em->wrapInTransaction(function ($em) use ($witnesses, $date) {
+            $tasks = $this->getTasksData($date, false);
+
+            $taskWitnessDates = $this->taskWitnessDateRepository->findBy(['date' => $date]);
+
+            foreach ($taskWitnessDates as $taskWitnessDate) {
+                $em->remove($taskWitnessDate);
             }
-            DB::commit();
-        } catch (\Exception $e) {
-            report($e);
-            DB::rollBack();
-            return false;
-        }
-        return true;
+            $em->flush();
+            foreach ($tasks as $taskName => $taskData) {
+                $taskWitnessDate = new TaskWitnessDate();
+                $taskWitnessDate->setDate($date);
+                $taskWitnessDate->setTask($taskName);
+                $taskWitnessDate->setRole($this->roleRepository->find($taskData['role_id']));
+                $taskWitnessDate->setWitness($this->witnessRepository->find($witnesses[$taskName]));
+                $em->persist($taskWitnessDate);
+            }
+            $em->flush();
+        });
     }
 
     private function combine($rawTasks, $dbTasks): array
     {
         foreach ($dbTasks as $task) {
-            $rawTasks[$task->task]['witness'] = $task->witness;
+            $rawTasks[$task->getTask()]['witness'] = $task->getWitness();
         }
         return $rawTasks;
     }
 
+    private function getArraYwitkKey(array $data, $keyField): array
+    {
+        $method = 'get' . ucfirst($keyField);
+        $result = [];
+        foreach ($data as $value) {
+            $result[$value->{$method}()] = $value;
+        }
+        return $result;
+    }
 
     public function getTasksData(Date $date, $withWitnesses = true): array
     {
@@ -98,19 +98,21 @@ class TaskManager
 
         $rawTasks = $this->getTasksDataFromTasks($this->tasksParser->getTasks($year, $week));
 
-        $dbTasks = TaskWitnessDate::with('witness')->where('date', '=',  $date)->get();
+        $dbTasks = $this->taskWitnessDateRepository->getWithWitness($date);
+        // TaskWitnessDate::with('witness')->where('date', '=',  $date)->get();
 
-        $roles = Role::orderBy('priority', 'DESC')->get()->keyBy('name')->toArray();
+        $roles = $this->getArraYwitkKey($this->roleRepository->findBy([], ['priority' => 'DESC']), 'name');
+        // Role::orderBy('priority', 'DESC')->get()->keyBy('name')->toArray();
 
         $tasks = $this->combine($rawTasks, $dbTasks);
-
+        // dd($rawTasks, $dbTasks, $tasks, $roles);
 
         $number = 1;
 
         foreach ($tasks as &$task) {
             $task['number'] = $number++;
-            $task['priority'] = $roles[$task['role']]['priority'] ?? 0;
-            $task['role_id'] = $roles[$task['role']]['id'] ?? 0;
+            $task['priority'] = $roles[$task['role']]?->getPriority() ?? 0;
+            $task['role_id'] = $roles[$task['role']]?->getId() ?? 0;
         }
 
         if ($withWitnesses) {
@@ -120,7 +122,7 @@ class TaskManager
             foreach ($tasks as &$task) {
 
                 $task['witnesses'] = $this->getWitnessesByRoleSorted($task['role'], $date);
-                //if (isset($task['witness'])) continue;
+
                 $task['suggested_witness'] = $this->getNexWitnessByRole($task['role'], $date)->current();
             }
 
@@ -129,6 +131,11 @@ class TaskManager
         }
 
         return $tasks;
+    }
+
+    public function refreshTasks(int $year, int $week)
+    {
+        $this->tasksParser->refresh($year, $week);
     }
 
     public function getDateString(int $year, int $week)
@@ -170,9 +177,10 @@ class TaskManager
     private function getNexWitnessByRole(string $role,  Date $date)
     {
         $witnesses = $this->getWitnessesByRole($role, $date);
+
         foreach ($witnesses as $witness) {
-            if (isset($this->usedWitnesses[$date->__toString()][$witness->witness_id])) continue;
-            $this->usedWitnesses[$date->__toString()][$witness->witness_id] = $witness->witness_id;
+            if (isset($this->usedWitnesses[(string)$date][$witness['witness_id']])) continue;
+            $this->usedWitnesses[(string)$date][$witness['witness_id']] = $witness['witness_id'];
             yield $witness;
         }
     }

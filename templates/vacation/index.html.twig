@@ -6,13 +6,18 @@
 
 {% block body %}
 
-   {% if witness %}
+    {% if witness %}
          {% set params = {'id': witness.id} %}
-   {% else %} 
+    {% else %} 
          {% set params = {} %}
-   {% endif %}
-    <h1>Vacation index</h1>
-
+    {% endif %}
+     <h1>Vacation index</h1>
+    {% if witness %}
+        <a class="btn btn-primary m-1" href="{{ path('app_vacation_new', {'id': witness.id}) }}">Create new</a>
+    {% else %} 
+         <a class="btn btn-primary m-1" href="{{ path('app_vacation_new') }}">Create new</a>
+    {% endif %}
+    {{ pagerfanta(vacations) }}
     <table class="table">
         <thead>
             <tr>
@@ -43,10 +48,6 @@
         {% endfor %}
         </tbody>
     </table>
-   {% if witness %}
-        <a href="{{ path('app_vacation_new', {'id': witness.id}) }}">Create new</a>
-   {% else %} 
-         <a href="{{ path('app_vacation_new') }}">Create new</a>
-   {% endif %}
-   
+
+   {{ pagerfanta(vacations) }}
 {% endblock %}

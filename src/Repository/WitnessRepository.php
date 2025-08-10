@@ -6,6 +6,7 @@ use App\Entity\Witness;
 use App\Repository\Traits\ItemsById;
 use App\Util\Date;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -76,6 +77,31 @@ class WitnessRepository extends ServiceEntityRepository implements Pageable
 
     public function getWitnessesByRole(string $role, Date $date)
     {
+
+        $r = $this->createQueryBuilder('w')
+            ->select('w.id AS witness_id')
+            ->addSelect('w.fullName')
+            ->addSelect('MAX(twd.date) AS last_date')
+            ->addSelect('r.name AS role_name')
+            ->addSelect('r.id as role_id')
+
+            ->innerJoin('w.Roles', 'r')
+            ->leftJoin(
+                'App\Entity\TaskWitnessDate',
+                'twd',
+                Join::WITH,
+                'twd.Witness = w AND twd.Role = r AND twd.date < :date '
+            )
+            ->setParameter('date', $date)
+            ->andWhere('r.name = :role')
+            ->andWhere('w.active = 1')
+            ->setParameter('role', $role)
+            ->groupBy('w')
+            ->orderBy('last_date', 'ASC')
+            ->getQuery()->getResult();
+
+        return $r;
+
         '
 select
     `witnesses`.`id` as `witness_id`,
@@ -89,9 +115,9 @@ from
     inner join `roles` on `role_witness`.`role_id` = `roles`.`id`
     left join `task_witness_date` on `witnesses`.`id` = `task_witness_date`.`witness_id`
     and `roles`.`id` = `task_witness_date`.`role_id`
-    and `task_witness_date`.`date` < :date
+    and `task_witness_date`.`date` < "2024-05-27"
 where
-    `roles`.`name` = :role
+    `roles`.`name` = "Промова"
     and `witnesses`.`active` = 1
 group by
     `witnesses`.`full_name`,
