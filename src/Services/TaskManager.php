@@ -10,8 +10,10 @@ use App\Repository\RoleRepository;
 use App\Repository\TaskWitnessDateRepository;
 use App\Repository\WitnessRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class TaskManager
 {
@@ -52,25 +54,30 @@ class TaskManager
 
     public function createSchedule(array $witnesses, Date $date)
     {
-        $this->em->wrapInTransaction(function ($em) use ($witnesses, $date) {
-            $tasks = $this->getTasksData($date, false);
+        try {
+            $this->em->wrapInTransaction(function ($em) use ($witnesses, $date) {
+                $tasks = $this->getTasksData($date, false);
 
-            $taskWitnessDates = $this->taskWitnessDateRepository->findBy(['date' => $date]);
+                $taskWitnessDates = $this->taskWitnessDateRepository->findBy(['date' => $date]);
 
-            foreach ($taskWitnessDates as $taskWitnessDate) {
-                $em->remove($taskWitnessDate);
-            }
-            $em->flush();
-            foreach ($tasks as $taskName => $taskData) {
-                $taskWitnessDate = new TaskWitnessDate();
-                $taskWitnessDate->setDate($date);
-                $taskWitnessDate->setTask($taskName);
-                $taskWitnessDate->setRole($this->roleRepository->find($taskData['role_id']));
-                $taskWitnessDate->setWitness($this->witnessRepository->find($witnesses[$taskName]));
-                $em->persist($taskWitnessDate);
-            }
-            $em->flush();
-        });
+                foreach ($taskWitnessDates as $taskWitnessDate) {
+                    $em->remove($taskWitnessDate);
+                }
+                $em->flush();
+                foreach ($tasks as $taskName => $taskData) {
+                    $taskWitnessDate = new TaskWitnessDate();
+                    $taskWitnessDate->setDate($date);
+                    $taskWitnessDate->setTask($taskName);
+                    $taskWitnessDate->setRole($this->roleRepository->find($taskData['role_id']));
+                    $taskWitnessDate->setWitness($this->witnessRepository->find($witnesses[$taskName]));
+                    $em->persist($taskWitnessDate);
+                }
+                $em->flush();
+            });
+            return true;
+        } catch (Throwable $e) {
+            return false;
+        }
     }
 
     private function combine($rawTasks, $dbTasks): array

@@ -18,19 +18,19 @@
 
 
 <div>
-    <form method="POST" action="{{ path('app_taks_store', {year: year, week: week})}}">
+    <form method="POST" >
        <table>
             {% for taskName, task in tasks %}           
 
                 <tr>
-                    <td  class="border border-gray-300 p-2">{{task.label}}</td>
+                    <td>{{task.label}}</td>
                     
                     {% if task.witness is defined and task.witness is not empty%}
-                        <td  class="border border-gray-300 p-2">{{ task.witness.fullName }}</td>
+                        <td>{{ task.witness.fullName }}</td>
                     {% endif %}
                     <td>
                         <select name="witnesses[{{taskName}}]" id="witnesses"
-                            class="w-full p-2 border rounded-lg focus:ring focus:ring-blue-200">
+                            class="w-100 p-2 border rounded-lg">
                             
                             {% for witness in task.witnesses %}
                                 <option value="{{ witness.witness_id }}"
@@ -45,7 +45,7 @@
                 </tr>
             {% endfor %}
         </table>
-        <button type="submit" class="mt-4 w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700">
+        <button type="submit"  class="btn btn-primary m-1">
             {{ 'Update' | trans }}
         </button>
         </form>

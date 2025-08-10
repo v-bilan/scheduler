@@ -17,9 +17,5 @@ class SyncController extends AbstractController
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
         ]);
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/SyncController.php',
-        ]);
     }
 }

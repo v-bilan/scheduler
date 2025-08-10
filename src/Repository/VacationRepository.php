@@ -32,14 +32,7 @@ class VacationRepository extends ServiceEntityRepository implements Pageable
                 ->setParameter('witness', $witness);
         }
     }
-    public function findAllWithWitnesses()
-    {
-        return $this->createQueryBuilder('v')
-            ->leftJoin('v.witness', 'Witness')
-            ->addSelect('Witness')
-            ->getQuery()
-            ->getResult();
-    }
+
     //    /**
     //     * @return Vacation[] Returns an array of Vacation objects
     //     */
