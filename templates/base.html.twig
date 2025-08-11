@@ -34,8 +34,11 @@
                 <li class="nav-item">
                     <a class="nav-link {% if app.request.attributes.get('_route') == 'app_witness_index'%} disabled {% endif %}" href="{{ path('app_witness_index')}}">{{ 'Witnesses' | trans }}</a>
                 </li>
-                 <li class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link {% if app.request.attributes.get('_route') == 'app_vacation_index'%} disabled {% endif %}" href="{{ path('app_vacation_index')}}">{{ 'Vacations' | trans }}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if app.request.attributes.get('_route') == 'app_export_index'%} disabled {% endif %}" href="{{ path('app_export_index')}}">{{ 'Export' | trans }}</a>
                 </li>
 
             </ul>

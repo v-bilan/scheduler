@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class ExportController extends AbstractController
 {
-    #[Route('/export', name: 'app_export')]
+    #[Route('/export', name: 'app_export_index')]
     public function index(Request $request, TaskWitnessDateRepository $taskWitnessDateRepository): Response
     {
         $form = $this->createForm(ExportType::class);
@@ -22,6 +22,7 @@ class ExportController extends AbstractController
             $dateFrom = $data['dateFrom'];
             $dateTo = $data['dateTo'];
             $items = $taskWitnessDateRepository->findByRange($dateFrom, $dateTo);
+
             dd($items);
             // ... логіка фільтрації або обробки дат
         }
@@ -31,5 +32,13 @@ class ExportController extends AbstractController
             'controller_name' => 'ExportController',
             'form' => $form->createView(),
         ]);
+    }
+    private function getFormatedData(array $items): array
+    {
+        $result = [];
+        foreach ($items as $item) {
+            // $result [$item->getDate()][$item->getTask()] =  
+        }
+        return $result;
     }
 }
