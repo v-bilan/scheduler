@@ -16,6 +16,7 @@ class RoleType extends AbstractType
         $builder
             ->add('name')
             ->add('priority')
+            ->add('school')
             ->add('witnesses', EntityType::class, [
                 'class' => Witness::class,
                 'choice_label' => 'fullName',

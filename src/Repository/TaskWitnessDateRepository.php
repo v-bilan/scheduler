@@ -31,19 +31,6 @@ class TaskWitnessDateRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByRange($dateFrom, $dateTo): array
-    {
-        return $this->createQueryBuilder('t')
-            ->leftJoin('t.Witness', 'Witness')
-            ->addSelect('Witness')
-            ->andWhere('t.date >= :dateFrom')
-            ->andWhere('t.date <= :dateTo')
-            ->setParameter('dateFrom', $dateFrom)
-            ->setParameter('dateTo', $dateTo)
-            ->orderBy('t.date', 'ASC')
-            ->getQuery()
-            ->getResult();
-    }
     //    /**
     //     * @return TaskWitnessDate[] Returns an array of TaskWitnessDate objects
     //     */

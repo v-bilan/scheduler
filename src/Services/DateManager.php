@@ -15,4 +15,9 @@ class DateManager
         $date->setTime(0, 0, 0);
         return $date;
     }
+
+    public function getMeetingDateData($date)
+    {
+        return [date_format($date, 'o'), date_format($date, 'W')];
+    }
 }

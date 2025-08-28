@@ -48,6 +48,9 @@ class Role
     #[ORM\Column(nullable: true)]
     private ?int $priority = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $school = null;
+
     public function __construct()
     {
         $this->witnesses = new ArrayCollection();
@@ -108,6 +111,18 @@ class Role
     public function setPriority(?int $priority): static
     {
         $this->priority = $priority;
+
+        return $this;
+    }
+
+    public function isSchool(): ?bool
+    {
+        return $this->school;
+    }
+
+    public function setSchool(?bool $school): static
+    {
+        $this->school = $school;
 
         return $this;
     }
