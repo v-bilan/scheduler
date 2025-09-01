@@ -22,7 +22,8 @@ class TasksParser
                 $matches = [];
 
                 if (preg_match('/\d{1,2}\.\s/', $el->text(), $matches)) {
-                    $speech = $el->nextAll()->count() > 0 && str_contains($el->nextAll()->eq(0)?->text(), 'Промова.');
+                    $speech = $el->nextAll()->count() > 0 && str_contains($el->nextAll()->eq(0)?->text(), 'Промова.')
+                        && trim($el->ancestors()?->first()?->previousAll()?->filter('h2')?->last()?->text()) == 'ВДОСКОНАЛЮЙМО СВОЄ СЛУЖІННЯ';
                     $result['tasks'][] =  $el->text() . ($speech ? ' ' . 'Промова.' : '');
                 };
             });
