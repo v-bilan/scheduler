@@ -2,7 +2,7 @@
         <div class="row g-2 align-items-center">
             <div class="col-auto">
                 <label for="filter" class="col-form-label">
-                    {{ field_label|default('Save') | trans}} :
+                    {{ field_label|default('Name') | trans}} :
                 </label>
             </div>
             <div class="col-auto">
@@ -12,7 +12,7 @@
                     name="filter"
                     value="{{ app.request.get('filter') }}"
                     class="form-control"
-                    placeholder="{{ 'Enter name'|trans }}"
+                    placeholder="{{ 'Searcf by ' ~ field_label|default('Name') |trans }}"
                 >
             </div>
 
