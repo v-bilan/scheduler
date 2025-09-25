@@ -1,0 +1,30 @@
+    <form method="get" class="mb-3 mt-2">
+        <div class="row g-2 align-items-center">
+            <div class="col-auto">
+                <label for="filter" class="col-form-label">
+                    {{ field_label|default('Save') | trans}} :
+                </label>
+            </div>
+            <div class="col-auto">
+                <input 
+                    type="text"
+                    id="filter"
+                    name="filter"
+                    value="{{ app.request.get('filter') }}"
+                    class="form-control"
+                    placeholder="{{ 'Enter name'|trans }}"
+                >
+            </div>
+
+            {% if app.request.query.get('orderBy', null) %}
+                <input type="hidden" name="orderBy" value="{{ app.request.get('orderBy') }}">
+                <input type="hidden" name="orderDir" value="{{ app.request.query.get('orderDir', 'asc') }}">
+            {% endif %}
+
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">
+                    {{ 'Search'|trans }}
+                </button>
+            </div>
+        </div>
+    </form>

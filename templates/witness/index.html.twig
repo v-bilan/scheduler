@@ -6,7 +6,10 @@
 {% block body %}
     <h1>Witness index</h1>
     <a href="{{ path('app_witness_new') }}" class="btn btn-primary">Create new</a>
+    {{ include('_search_form.html.twig', {'field_label': 'Full Name'}) }}
     <div class="mt-1">
+
+
     {{ pagerfanta(witnesses) }}
     </div>
     <table class="table">

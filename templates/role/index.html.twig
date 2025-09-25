@@ -5,6 +5,7 @@
 {% block body %}
     <h1>Role index</h1>
     <a href="{{ path('app_role_new') }}" class="btn btn-primary">Create new</a>
+    {{ include('_search_form.html.twig', {'field_label': 'Name'}) }}
     <div class="mt-1">
         {{ pagerfanta(roles) }}
     </div>

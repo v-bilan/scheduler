@@ -7,5 +7,6 @@ use Doctrine\ORM\QueryBuilder;
 interface Pageable
 {
     public function getFieldForSorting($field): ?string;
-    public function getFindByQueryBuilder($orderBy = []): QueryBuilder;
+    public function getFindByQueryBuilder(array $orderBy = [], ?string $filter = ''): QueryBuilder;
+    public function getFilterField(): string;
 }

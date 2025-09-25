@@ -11,8 +11,9 @@ trait Pageable
         return $this->sortableFields[$field] ?? null;
     }
 
-    public function getFindByQueryBuilder($orderBy = []): QueryBuilder
+    public function getFindByQueryBuilder(array $orderBy = [], ?string $filter = ''): QueryBuilder
     {
+        /** @var \Doctrine\ORM\QueryBuilder $result */
         $result = $this->createQueryBuilder('e');
 
         if ($orderBy) {
@@ -20,6 +21,17 @@ trait Pageable
                 $result->addOrderBy($field, $order);
             }
         }
+
+        if ($filter) {
+            $result->andWhere('e.' . $this->getFilterField() . ' like :param')
+                ->setParameter('param',  '%' . $filter . '%');
+        }
+
         return $result;
+    }
+
+    public function getFilterField(): string
+    {
+        return 'name';
     }
 }

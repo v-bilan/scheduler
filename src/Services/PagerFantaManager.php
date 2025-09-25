@@ -28,13 +28,15 @@ class PagerFantaManager
         $defaultOrderBy = null
     ): QueryBuilder {
         $orderBy = $request->get('orderBy', $defaultOrderBy);
+        $filter = $request->get('filter');
         if ($orderBy = $pageableRepository->getFieldForSorting($orderBy)) {
             $direction = strtolower($request->get('orderDir')) === 'desc' ? 'DESC' : 'ASC';
             $queryBuilder = $pageableRepository->getFindByQueryBuilder(
-                orderBy: [$orderBy => $direction]
+                orderBy: [$orderBy => $direction],
+                filter: $filter
             );
         } else {
-            $queryBuilder = $pageableRepository->getFindByQueryBuilder();
+            $queryBuilder = $pageableRepository->getFindByQueryBuilder(filter: $filter);
         }
         return $queryBuilder;
     }
