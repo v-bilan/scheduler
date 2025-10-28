@@ -31,33 +31,40 @@ class TaskController extends AbstractController
         private TaskManager $taskManager,
     ) {}
 
-    #[Route('/task/{year}/{week}', name: 'app_task', methods: ['GET', 'POST'])]
-    public function index(Request $request, int $year = 0, int $week = 0)
+    #[Route('/task/{year}/{week}/{school}', name: 'app_task', methods: ['GET', 'POST'])]
+    public function index(Request $request, int $year = 0, int $week = 0, ?bool $school = null)
     {
+        if ($school !== null) {
+            $school = (bool) $school;
+        }
+
         $date = $this->dateManager->getDate($year, $week);
         $year = $date->getFullYear();
         $week = $date->getWeek();
         $this->taskManager->refreshTasks($year, $week);
 
+
+        $tasks = $this->taskManager->getTasksData(date: $date, school: $school);
+
         if ($request->isMethod('POST')) {
             // TODO add validation
             $witnesses = $request->get('witnesses');
 
-            $result = $this->taskManager->createSchedule($witnesses, $date);
+            $result = $this->taskManager->createSchedule(witnesses: $witnesses, date: $date, school: $school);
             if ($result) {
                 $this->addFlash('success', 'Tasks where stored!');
             } else {
                 $this->addFlash('error', 'Some error has happened!');
             }
-            return $this->redirectToRoute('app_task', ['year' => $year, 'week' => $week]);
+            return $this->redirectToRoute('app_task', ['year' => $year, 'week' => $week, 'school' => $school]);
         }
 
-
         return $this->render('task/index.html.twig', [
+            'school' => $school,
             'year' => $year,
             'week' => $week,
             'date' => $this->taskManager->getDateString($year, $week),
-            'tasks' => $this->taskManager->getTasksData($date)
+            'tasks' => $tasks
         ]);
     }
 }
