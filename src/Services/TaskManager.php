@@ -10,9 +10,7 @@ use App\Repository\RoleRepository;
 use App\Repository\TaskWitnessDateRepository;
 use App\Repository\WitnessRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
-use Illuminate\Database\Query\JoinClause;
-use Illuminate\Support\Facades\DB;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 class TaskManager
@@ -27,6 +25,7 @@ class TaskManager
     private $usedWitnesses = [];
 
     public function __construct(
+        private LoggerInterface $logger,
         private EntityManagerInterface $em,
         private TasksParser $tasksParser,
         private WitnessRepository $witnessRepository,
@@ -52,18 +51,21 @@ class TaskManager
         return $this->witnessesByRole[$key][$role];
     }
 
-    public function createSchedule(array $witnesses, Date $date)
+    public function createSchedule(array $witnesses, Date $date, ?bool $school = null)
     {
         try {
-            $this->em->wrapInTransaction(function ($em) use ($witnesses, $date) {
-                $tasks = $this->getTasksData($date, false);
+            $this->em->wrapInTransaction(function ($em) use ($witnesses, $date, $school) {
+                $tasks = $this->getTasksData(date: $date, withWitnesses: false, school: $school);
 
                 $taskWitnessDates = $this->taskWitnessDateRepository->findBy(['date' => $date]);
 
                 foreach ($taskWitnessDates as $taskWitnessDate) {
-                    $em->remove($taskWitnessDate);
+                    if ($school === null || $taskWitnessDate->getRole()->isSchool() == $school) {
+                        $em->remove($taskWitnessDate);
+                    }
                 }
                 $em->flush();
+
                 foreach ($tasks as $taskName => $taskData) {
                     $taskWitnessDate = new TaskWitnessDate();
                     $taskWitnessDate->setDate($date);
@@ -76,6 +78,7 @@ class TaskManager
             });
             return true;
         } catch (Throwable $e) {
+            $this->logger->error($e->getMessage());
             return false;
         }
     }
@@ -98,8 +101,9 @@ class TaskManager
         return $result;
     }
 
-    public function getTasksData(Date $date, $withWitnesses = true): array
+    public function getTasksData(Date $date, $withWitnesses = true, ?bool $school = null): array
     {
+        //   $school  = !true;
         $year = $date->getFullYear();
         $week = $date->getWeek();
 
@@ -112,14 +116,20 @@ class TaskManager
         // Role::orderBy('priority', 'DESC')->get()->keyBy('name')->toArray();
 
         $tasks = $this->combine($rawTasks, $dbTasks);
-        // dd($rawTasks, $dbTasks, $tasks, $roles);
+        //  dd($rawTasks, $dbTasks, $tasks, $roles);
 
         $number = 1;
 
-        foreach ($tasks as &$task) {
+        foreach ($tasks as $key => &$task) {
+            $role = $roles[$task['role']] ?? null;
+
+            if ($school !== null && $role->isSchool() != $school) {
+                unset($tasks[$key]);
+                continue;
+            }
             $task['number'] = $number++;
-            $task['priority'] = $roles[$task['role']]?->getPriority() ?? 0;
-            $task['role_id'] = $roles[$task['role']]?->getId() ?? 0;
+            $task['priority'] = $role?->getPriority() ?? 0;
+            $task['role_id'] = $role?->getId() ?? 0;
         }
 
         if ($withWitnesses) {

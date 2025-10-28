@@ -8,6 +8,27 @@
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
 
+    <div  class="navbar navbar-expand-lg">
+         <span class="ms-2 btn btn-primary" >
+            <a class="nav-link"  href="{{ path('app_task', {year: year, week: week, school: 1}) }}" aria-label="{{'Schooll'| trans}}">{{'Schooll'| trans}}</a>
+         </span>
+         <span class="ms-2 btn btn-primary">
+            <a class="nav-link " href="{{ path('app_task', {year: year, week: week, school: 0}) }}" aria-label="{{'Task'| trans}}">{{'Task'| trans}}</a>
+        </span>
+        <span class="ms-2 btn btn-primary">
+            <a class="nav-link" href="{{ path('app_task', {year: year, week: week}) }}" aria-label="{{'All'| trans}}">{{'All'| trans}}</a>
+        </span>
+    </div>
+
+{% if school is not empty %}
+    <div class="">
+        <a href="{{ path('app_task', {year: year, week: week - 1, school: school}) }}" aria-label="попередній тиждень"><<</a>
+        <strong>{{ date }}</strong>
+        <a href="{{ path('app_task', {year: year, week: week + 1, school: school}) }}" aria-label="наступний тиждень">
+            >>
+        </a>
+    </div>
+{% else %}
     <div class="">
         <a href="{{ path('app_task', {year: year, week: week - 1}) }}" aria-label="попередній тиждень"><<</a>
         <strong>{{ date }}</strong>
@@ -15,7 +36,7 @@
             >>
         </a>
     </div>
-
+{% endif %}
 
 <div>
     <form method="POST" >
@@ -24,10 +45,11 @@
 
                 <tr>
                     <td>{{task.label}}</td>
-                    
+                    <td>
                     {% if task.witness is defined and task.witness is not empty%}
-                        <td>{{ task.witness.fullName }}</td>
+                        {{ task.witness.fullName }}
                     {% endif %}
+                    </td>
                     <td>
                         <select name="witnesses[{{taskName}}]" id="witnesses"
                             class="w-100 p-2 border rounded-lg">
@@ -48,6 +70,7 @@
         <button type="submit"  class="btn btn-primary m-1">
             {{ 'Update' | trans }}
         </button>
+
         </form>
 </div>
 {% endblock %}

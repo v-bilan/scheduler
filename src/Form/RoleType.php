@@ -6,6 +6,7 @@ use App\Entity\Role;
 use App\Entity\Witness;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -16,7 +17,7 @@ class RoleType extends AbstractType
         $builder
             ->add('name')
             ->add('priority')
-            ->add('school')
+            ->add('school', CheckboxType::class)
             ->add('witnesses', EntityType::class, [
                 'class' => Witness::class,
                 'choice_label' => 'fullName',
