@@ -22,10 +22,11 @@ class RoleRepository extends ServiceEntityRepository implements Pageable
     }
     public function getRolesIdBySchool($school = false)
     {
-        $items = $school ? $this->findBy(['school' => $school]) : $this->createQueryBuilder('r')
-            ->andWhere('r.school  = false OR r.school is null')
+        $items = $school ? $this->findBy(['is_school' => $school]) : $this->createQueryBuilder('r')
+            ->andWhere('r.isschool  = false OR r.school is null')
             ->getQuery()
             ->getResult();
+
         $result = [];
         foreach ($items as $item) {
             $result[$item->getId()] = $item;

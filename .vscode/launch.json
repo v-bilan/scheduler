@@ -1,0 +1,28 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Listen for Xdebug",
+            "type": "php",
+            "request": "launch",
+            "port": 9010, // Xdebug 3 default
+            "pathMappings": {
+                "/var/www/html/symfony/scheduler": "${workspaceFolder}"
+            }
+        },
+        {
+            "name": "Launch Symfony Local Web Server",
+            "type": "php",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/console",
+            "args": [
+                "server:run"
+            ],
+            "cwd": "${workspaceFolder}",
+            "port": 9010,
+            "pathMappings": {
+                "/var/www/html/symfony/scheduler": "${workspaceFolder}"
+            }
+        }
+    ]
+}
