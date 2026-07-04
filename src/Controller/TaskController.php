@@ -32,7 +32,7 @@ class TaskController extends AbstractController
     ) {}
 
     #[Route('/task/{year}/{week}/{school}', name: 'app_task', methods: ['GET', 'POST'])]
-    public function index(Request $request, int $year = 0, int $week = 0, ?bool $school = null)
+    public function index(Request $request, ?int $year = null, ?int $week = null, ?bool $school = null)
     {
         if ($school !== null) {
             $school = (bool) $school;

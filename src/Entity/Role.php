@@ -41,7 +41,7 @@ class Role
     /**
      * @var Collection<int, Witness>
      */
-    #[ORM\ManyToMany(targetEntity: Witness::class, mappedBy: 'Roles')]
+    #[ORM\ManyToMany(targetEntity: Witness::class, mappedBy: 'Roles', cascade: ['persist'])]
     private Collection $witnesses;
 
     #[Groups(['role:list'])]

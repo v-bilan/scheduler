@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Witness;
 use App\Form\WitnessType;
+use App\Repository\TaskWitnessDateRepository;
 use App\Repository\WitnessRepository;
 use App\Services\PagerFantaManager;
 use App\Util\Date;
@@ -48,10 +49,11 @@ class WitnessController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_witness_show', methods: ['GET'])]
-    public function show(Witness $witness): Response
+    public function show(Witness $witness, TaskWitnessDateRepository $taskWitnessDateRepository): Response
     {
         return $this->render('witness/show.html.twig', [
             'witness' => $witness,
+            'lastTasks' => $taskWitnessDateRepository->getWitnwessLastTasks($witness, 10),
         ]);
     }
 

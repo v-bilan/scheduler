@@ -162,6 +162,7 @@ class TaskManager
 
     private function getTasksDataFromTasks(array $tasks): array
     {
+       // dd($tasks);
         $result = [
             'leader' => [
                 'label' => 'Ведучий',

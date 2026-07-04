@@ -20,6 +20,9 @@ class WitnessType extends AbstractType
                 'class' => Role::class,
                 'choice_label' => 'name',
                 'multiple' => true,
+                'attr' => [
+                    'size' => 20, 
+                ],
             ])
             ->add('active', CheckboxType::class, ['required' => false])
         ;

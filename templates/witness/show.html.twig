@@ -27,4 +27,22 @@
     <a class="btn btn-primary m-1" href="{{ path('app_witness_edit', {'id': witness.id}) }}">edit</a>
 
     {{ include('witness/_delete_form.html.twig') }}
+    <h2>Last tasks</h2>
+    <table class="table">
+        <thead>
+            <tr>
+              
+                <th>Date</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for task in lastTasks %}
+            <tr>
+                <td>{{ task.date | date('Y-m-d') }}</td>
+                <td>{{ task.Role.name }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

@@ -22,13 +22,16 @@ class TasksParser
                 $matches = [];
 
                 if (preg_match('/\d{1,2}\.\s/', $el->text(), $matches)) {
+                    dump($el->nextAll()->eq(0)?->text());
                     $speech = $el->nextAll()->count() > 0 && str_contains($el->nextAll()->eq(0)?->text(), 'Промова.')
-                        && trim($el->ancestors()?->first()?->previousAll()?->filter('h2')?->last()?->text()) == 'ВДОСКОНАЛЮЙМО СВОЄ СЛУЖІННЯ';
+                     //s   && trim($el->ancestors()?->first()?->previousAll()?->filter('h2')?->last()?->text()) == 'ВДОСКОНАЛЮЙМО СВОЄ СЛУЖІННЯ'
+                     ;
                     $result['tasks'][] =  $el->text() . ($speech ? ' ' . 'Промова.' : '');
                 };
             });
             $this->tasks[$year][$week] = $result;
         }
+       // dd($this->tasks);
     }
 
     public function getDate(int $year, int $week)

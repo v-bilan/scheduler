@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Role;
 use App\Entity\Witness;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -17,12 +18,22 @@ class RoleType extends AbstractType
         $builder
             ->add('name')
             ->add('priority')
-            ->add('school', CheckboxType::class)
+            ->add('school', CheckboxType::class, ['required' => false])
             ->add('witnesses', EntityType::class, [
                 'class' => Witness::class,
                 'choice_label' => 'fullName',
                 'multiple' => true,
                 'required' => false,
+                'by_reference' => false,
+                'attr' => [
+                    'size' => 30, 
+                ],
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('w')
+                    ->where('w.active = :active')
+                    ->setParameter('active', true)
+                    ->orderBy('w.fullName', 'ASC');
+                },
             ])
         ;
     }
