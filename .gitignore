@@ -1,4 +1,6 @@
-scheduler.sql.gz
+/cached_pages/
+/scheduler.sql.gz
+/backup.sql.gz
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -8,7 +10,7 @@ scheduler.sql.gz
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
-
+/.idea
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
 /public/build/
