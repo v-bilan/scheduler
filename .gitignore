@@ -11,6 +11,7 @@
 /vendor/
 ###< symfony/framework-bundle ###
 /.idea
+/.idea/php.xml
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
 /public/build/

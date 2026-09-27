@@ -117,9 +117,43 @@
       <path value="$PROJECT_DIR$/vendor/pagerfanta/core" />
       <path value="$PROJECT_DIR$/vendor/babdev/pagerfanta-bundle" />
       <path value="$PROJECT_DIR$/vendor/pagerfanta/twig" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/common" />
+      <path value="$PROJECT_DIR$/vendor/symfony/expression-language" />
+      <path value="$PROJECT_DIR$/vendor/symfony/clock" />
+      <path value="$PROJECT_DIR$/vendor/symfony/type-info" />
+      <path value="$PROJECT_DIR$/vendor/symfony/web-link" />
+      <path value="$PROJECT_DIR$/vendor/symfony/security-bundle" />
+      <path value="$PROJECT_DIR$/vendor/symfony/http-client" />
+      <path value="$PROJECT_DIR$/vendor/willdurand/negotiation" />
+      <path value="$PROJECT_DIR$/vendor/symfony/http-client-contracts" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php84" />
+      <path value="$PROJECT_DIR$/vendor/symfony/security-http" />
+      <path value="$PROJECT_DIR$/vendor/symfony/mailer" />
+      <path value="$PROJECT_DIR$/vendor/symfony/mime" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-idn" />
+      <path value="$PROJECT_DIR$/vendor/symfony/uid" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-uuid" />
+      <path value="$PROJECT_DIR$/vendor/symfonycasts/verify-email-bundle" />
+      <path value="$PROJECT_DIR$/vendor/api-platform/state" />
+      <path value="$PROJECT_DIR$/vendor/api-platform/doctrine-orm" />
+      <path value="$PROJECT_DIR$/vendor/api-platform/hydra" />
+      <path value="$PROJECT_DIR$/vendor/api-platform/openapi" />
+      <path value="$PROJECT_DIR$/vendor/api-platform/symfony" />
+      <path value="$PROJECT_DIR$/vendor/api-platform/documentation" />
+      <path value="$PROJECT_DIR$/vendor/api-platform/jsonld" />
+      <path value="$PROJECT_DIR$/vendor/api-platform/validator" />
+      <path value="$PROJECT_DIR$/vendor/api-platform/http-cache" />
+      <path value="$PROJECT_DIR$/vendor/api-platform/metadata" />
+      <path value="$PROJECT_DIR$/vendor/api-platform/json-schema" />
+      <path value="$PROJECT_DIR$/vendor/api-platform/serializer" />
+      <path value="$PROJECT_DIR$/vendor/api-platform/doctrine-common" />
+      <path value="$PROJECT_DIR$/vendor/andanteproject/timestampable-bundle" />
+      <path value="$PROJECT_DIR$/vendor/psr/clock" />
+      <path value="$PROJECT_DIR$/vendor/psr/link" />
+      <path value="$PROJECT_DIR$/vendor/nelmio/cors-bundle" />
+      <path value="$PROJECT_DIR$/vendor/egulias/email-validator" />
     </include_path>
   </component>
-  <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />
   <component name="PhpStanOptionsConfiguration">
     <option name="transferred" value="true" />
   </component>
